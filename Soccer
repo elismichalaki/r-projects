@@ -1,0 +1,77 @@
+#We assume the score of 2 soccer teams follow the Poisson Distribution
+#l1,l2 are their expected values 
+
+Soccer <- function(T=1000,l1=1,l2=1,g=2) { 
+
+#Generating T random scores
+
+X <- rpois(T,l1)
+Y <- rpois(T,l2)
+
+#The probability of each team winning
+
+VictoryX <- sum(as.numeric(X>Y))/T ; print (paste("The probability of X winning is:", VictoryX ))
+VictoryY <- sum(as.numeric(X<Y))/T ; print (paste("The probability of Y winning is:", VictoryY ))
+Tie <- sum(as.numeric(X==Y))/T; print (paste("The probability of tie is:", Tie ))
+
+#The most possible outcome
+
+x <- paste(X,Y,sep="-")
+
+matrix1 <- matrix( 0, T, T )
+
+for (i in 1:T){
+    for(j in 1:T) { 
+ matrix1[i,j] <- x[i] == x[j]
+ }
+ }
+
+matrix1 <- unique(matrix1)
+rownames(matrix1) <- unique(x)
+
+probab1 <- rowSums(unique(matrix1))/T
+
+max.score <<- which.max (probab1); print(paste("The most common score is:",names(max.score)))
+prob.max.score <<- probab1[max.score] ; print(paste("The probability of this score is:",prob.max.score))
+	
+#Showing the probabilities of all scores if the user wants to
+menug <- menu(choices=c("Yes","No"), graphics = TRUE, title = "Do you want to see the probabilities of all scores?")
+	if (menug==1) {
+		print("The possibilities of all scores are:")
+		print(probab1)}
+
+
+difference <- abs(X-Y)
+
+#Showing the probabilities of all scores' differences if the user wants to
+
+menud <- menu(choices=c("Yes","No"), graphics = TRUE, title = "Do you want to see the possibilities of score differences?")
+
+if(menud==1) {
+
+matrix2 <- matrix( 0, T, T )
+
+for (i in 1:T){
+    for(j in 1:T) { 
+ matrix2[i,j] <- difference[i]==difference[j]
+ }
+ }
+matrix2 <- unique(matrix2)
+rownames(matrix2) <- unique(difference)
+
+probab2 <- rowSums(unique(matrix2))/T ; print ("The probabilities of score differences are:")
+print (probab2)
+}
+ 
+#Showing the probability of total score over g 
+
+over <- X+Y 
+
+matrix3 <- 0
+
+for (i in 1:T){
+ matrix3[i] <- over[i]>g
+ }
+
+probab3 <- sum(matrix3)/T ; print(paste("The probability of score over",g,"is:",probab3) )
+}
