@@ -1,0 +1,38 @@
+#Calculating P(X=k) and P(X<=k)
+#Lambda is the total number of events (k) divided by the number of units (n) in the data 
+
+poisson <- function(k=1,lambda=2) {
+	
+	#checking if lambda > k
+  if(k>lambda){print("error: k needs to be smaller that lamda") ; P<<- NA ; psum <<- NA} 
+
+	else {
+	
+		#For k= 0 or 1 I use seperate ifs
+		if(k==0) {
+			P <<- exp(-lambda)
+			psum <<- P
+		} else {
+		if(k==1) { 
+			p0 <- exp(-lambda)
+			P <<- p0*(lambda/k)
+			psum <<- P
+     
+		} else {
+			P <- rep(0, times = k+1)
+			
+			P[1]<- exp(-lambda)
+			
+			for (i in 1:k){
+				P[i+1] <- P[i]*(k/(lambda+1))
+			}
+		
+		psum <- sum(P)-P[i+1]
+		P <- P[k]
+		
+		}}		
+
+results.poisson <- list(P,psum) 
+
+return(results.poisson) }
+}
